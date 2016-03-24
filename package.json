@@ -10,7 +10,8 @@
   },
   "description": "microservice that converts timestamps into readable date formats",
   "dependencies": {
-    "express": "^4.13.4"
+    "express": "^4.13.4",
+    "moment": "^2.12.0"
   },
   "devDependencies": {}
 }
