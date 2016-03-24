@@ -7,22 +7,38 @@ var port = process.env.PORT || 8080;
 
 var moment = require('moment');
 
-app.get('/:date', function(req, res) {
+app.get('/', function(req, res) {
+	res.sendFile(path.resolve('./public/index.html'));
+})
 
-	if (req.params.date.replace(/\d/g, "") === "") {
-		var naturalDate = moment(req.params.date, "X").format('LL');
-		res.json(
-			{"unix": req.params.date, "natural": naturalDate}
-		)
+app.get('/:date', function(req, res) {
+	var inputDate = req.params.date;
+
+	// if input is a unix date
+	if (inputDate.replace(/\d/g, "") === "") {
+		var naturalDate = moment(inputDate, "X").format('LL');
+		if (inputDate.length === 10) {
+			res.json(
+				{"unix": inputDate, "natural": naturalDate}
+			)
+		}
+		else {
+			res.json(
+				{"unix": null, "natural": null}
+			)
+		}
 	}
 
-	else if (moment(req.params.date).isValid()) {	
-			var naturalDate = moment(req.params.date, 'MMMM D, YYYY');
-			var unixDate = naturalDate.unix();
-			res.json(
-				{"unix": unixDate, "natural": naturalDate.format('LL')}
-			)
-	} else { res.sendFile(path.resolve('./public/index.html')); }
+	// if input is a natural date string
+	else if (moment(inputDate).isValid()) {	
+		var naturalDate = moment(inputDate, 'MMMM D, YYYY');
+		var unixDate = naturalDate.unix();
+		res.json(
+			{"unix": unixDate, "natural": naturalDate.format('LL')}
+		)
+	} 
+	else { res.json({"unix": null, "natural": null}) }
+	//else { res.sendFile(path.resolve('./public/index.html')); }
 })
 
 http.listen(port, function() {
