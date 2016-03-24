@@ -10,11 +10,10 @@ var moment = require('moment');
 app.get('/:date', function(req, res) {
 
 	if (req.params.date.replace(/\d/g, "") === "") {
-			var naturalDate = moment(req.params.date, "X").format('LL');
-			res.json(
-				{"unix": req.params.date, "natural": naturalDate}
-			)
-			// pass on the unix date
+		var naturalDate = moment(req.params.date, "X").format('LL');
+		res.json(
+			{"unix": req.params.date, "natural": naturalDate}
+		)
 	}
 
 	else if (moment(req.params.date).isValid()) {	
