@@ -8,17 +8,22 @@ var port = process.env.PORT || 8080;
 var moment = require('moment');
 
 app.get('/:date', function(req, res) {
-	var queryDate = new Date(req.params.date);
-	console.log(queryDate);
 
-	if (queryDate !== 'Invalid Date') {
-		var unixDate = moment.unix(moment(queryDate));
-		var naturalDate = moment(queryDate, "MM DD, YYYY");
-		res.json(
-			{"unix": unixDate, "natural": naturalDate}
-		)
+	if (req.params.date.replace(/\d/g, "") === "") {
+			var naturalDate = moment(req.params.date, "X").format('LL');
+			res.json(
+				{"unix": req.params.date, "natural": naturalDate}
+			)
+			// pass on the unix date
 	}
-	else { res.send('hi'); }
+
+	else if (moment(req.params.date).isValid()) {	
+			var naturalDate = moment(req.params.date, 'MMMM D, YYYY');
+			var unixDate = naturalDate.unix();
+			res.json(
+				{"unix": unixDate, "natural": naturalDate.format('LL')}
+			)
+	} else { res.sendFile(path.resolve('./public/index.html')); }
 })
 
 http.listen(port, function() {
